@@ -1,0 +1,18 @@
+{
+  "name": "list",
+  "describe": "list data",
+  "url": "/list",
+  "method": "GET",
+  "dataType": "JSON",
+  "responseKey": "firstKey",
+  "responseOptions": {
+    "firstKey": {
+      "desc": "one item",
+      "path": "./list/firstData.json"
+    },
+    "SecondKey": {
+      "desc": "ten items",
+      "path": "./list/secondData.json"
+    }
+  }
+}

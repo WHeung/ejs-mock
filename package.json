@@ -1,0 +1,42 @@
+{
+  "name": "ejs-mock",
+  "description": "local mock data server",
+  "version": "0.0.1",
+  "keywords": ["server", "mock", "routes", "proxy"],
+  "homepage": "https://github.com/dwfeiFE/ejs-mock",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dwfeiFE/ejs-mock.git"
+  },
+  "author": {
+    "name": "dwfeiFE",
+    "email": "ibonework@gmail.com"
+  },
+  "files": [
+    "index.js",
+    "bin",
+    "plugins",
+    "admin"
+  ],
+  "bin": {
+    "ejs-mock": "./bin/ejs-mock.js"
+  },
+  "dependencies": {
+    "chalk": "^1.0.0",
+    "commander": "^2.11.0",
+    "ejs": "^2.5.6",
+    "express": "^4.13.0",
+    "lodash": "^4.17.4",
+    "path-to-regexp": "^1.7.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.2.0",
+    "eslint-config-vue": "^2.0.2",
+    "eslint-plugin-html": "^3.0.0",
+    "eslint-plugin-vue": "^2.1.0"
+  },
+  "engines": {
+    "node": ">= 6.11.1"
+  },
+  "license": "MIT"
+}
