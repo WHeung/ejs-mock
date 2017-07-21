@@ -1,7 +1,7 @@
 {
   "name": "ejs-mock",
   "description": "local mock data server",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "keywords": ["server", "mock", "routes", "proxy"],
   "homepage": "https://github.com/dwfeiFE/ejs-mock",
   "repository": {

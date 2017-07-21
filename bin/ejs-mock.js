@@ -1,3 +1,7 @@
+#!/usr/bin/env node
+
+"use strict";
+
 var program = require('commander')
 var fs = require('fs')
 var path = require('path')
@@ -8,62 +12,51 @@ program
 program
   .command('start')
   .option('-p, --port <port>', 'set server port')
-  .action(function (env, options) {
-    if (!fs.existsSync('.chameleonrc')) {
-      console.log('no found config file \'.chameleonrc\' ')
-      console.log('use \'./node_modules/.bin/chameleon-mock init\' ')
-    }
-
-    var config = require('./.chameleonrc')
-    var ChameleonMock = require(env.modulePath)
-    config.appPath = path.join(process.cwd())
-    config.userSettingPath = path.join(config.appPath, 'chameleonsetting.json')
-    config.rootPath = path.join(config.appPath, config.rootPath)
-    config.mockPath = path.join(config.appPath, config.mockPath)
-
-    ChameleonMock(config)
-    console.log('start chameleon-mock server http://localhost:8080')
-    console.log('visit chameleon-mock admin http://localhost:8080/chameleon-mock/admin')
-  })
-
-program
-  .command('init')
-  .action(function () {
-    console.log('init')
-    var configPath = path.join(process.cwd(), '.chameleonrc')
-    if (fs.existsSync(configPath)) {
-      console.log('chameleon-mock config file exist')
-    } else {
+  .action(function (options) {
+    if (!fs.existsSync('.ejsmockrc')) {
+      console.log('init ejs-mock config')
+      var configPath = path.join(process.cwd(), '.ejsmockrc')
       var config = {
         'name': 'app name',
         'port': '8080',
         'mockPath': './mock',
         'rootPath': './dist'
       }
-      fs.writeFile('.chameleonrc', JSON.stringify(config), function (err) {
+      fs.writeFileSync('.ejsmockrc', JSON.stringify(config, null, 4), function (err) {
         if (err) throw err
-        console.log('create chameleon-mock config file: .chameleonrc')
+        console.log('create ejs-mock config file: .ejsmockrc')
       })
     }
+
+    var config = JSON.parse(fs.readFileSync('./.ejsmockrc', 'utf8'))
+    var EjsMock = require(path.join(__dirname, '../'))
+    config.appPath = path.join(process.cwd())
+    config.userSettingPath = path.join(config.appPath, 'ejsmocksettings.json')
+    config.rootPath = path.join(config.appPath, config.rootPath)
+    config.mockPath = path.join(config.appPath, config.mockPath)
+
+    EjsMock(config)
+    console.log(`start ejs-mock server http://localhost:${config.port}`)
+    console.log(`visit ejs-mock admin http://localhost:${config.port}/ejs-mock/admin`)
   })
 
 program
   .command('demo')
   .action(function () {
-    console.log('start chameleon-mock server http://localhost:8080')
-    console.log('visit chameleon-mock admin http://localhost:8080/chameleon-mock/admin')
-    var configPath = path.join(__dirname, '../example/.chameleonrc')
+    var configPath = path.join(__dirname, '../example/.ejsmockrc')
     var modulePath = path.join(__dirname, '../')
     var text = fs.readFileSync(configPath, 'utf8')
     var config = JSON.parse(text)
-    var ChameleonMock = require(modulePath)
+    var EjsMock = require(modulePath)
 
     config.appPath = path.join(__dirname, '../example/')
-    config.userSettingPath = path.join(config.appPath, 'chameleonsetting.json')
+    config.userSettingPath = path.join(config.appPath, 'ejsmocksettings.json')
     config.rootPath = path.join(config.appPath, config.rootPath)
     config.mockPath = path.join(config.appPath, config.mockPath)
 
-    ChameleonMock(config)
+    EjsMock(config)
+    console.log('start ejs-mock server http://localhost:8080')
+    console.log('visit ejs-mock admin http://localhost:8080/ejs-mock/admin')
   })
 
 program.parse(process.argv)
