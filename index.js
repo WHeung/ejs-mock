@@ -1,7 +1,6 @@
 var express = require('express')
 var _ = require('lodash')
 var path2Regexp = require('path-to-regexp')
-var logger = require('morgan')
 var fs = require('fs')
 var path = require('path')
 var url = require('url')
@@ -152,7 +151,6 @@ function initAPI (app, config) {
 
 function main (config) {
   var app = express()
-  app.use(logger('dev'))
   initStaticServer(app, config)
   initAdmin(app, config)
   initAPI(app, config)
