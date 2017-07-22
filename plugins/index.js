@@ -28,7 +28,6 @@ function mount (mock, req, mockData, callback) {
 
 function loadPlugin (plugins, mockData, env, callback) {
   var plugin = plugins.pop()
-  console.log('loadPlugin')
   allPlugins[plugin.name](plugin.option, mockData, env, function (result) {
     if (plugins.length > 0) {
       loadPlugin(plugins, result, env, callback)
