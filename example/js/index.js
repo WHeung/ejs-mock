@@ -2,7 +2,7 @@
   var template = $('#template').text()
 
   $.ajax({
-    url: '/chameleon-mock/admin/list',
+    url: '/ejs-mock/admin/list',
     dataType: 'json',
     success: function (data) {
       var html = ejs.render(template, { list: data.data })
@@ -16,7 +16,7 @@
     var optionKey = $(this).data('key')
     var id = $(this).data('id')
     $.ajax({
-      url: '/chameleon-mock/admin/update',
+      url: '/ejs-mock/admin/update',
       data: {
         mockName: mockName,
         responseKey: optionKey

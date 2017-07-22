@@ -11,8 +11,8 @@
     <div class="section" v-for="mock in list" :key="mock.name">
       <div class="title">{{mock.name}}</div>
       <div class="list">
-        <template v-for="option in mock.responseOptionsList" v-key="option.name">
-          <div :class="['item', {'on': option.name == mock.responseKey}]" @click="switchMockData(mock, option)">{{option.name}}</div>
+        <template v-for="option in mock.responseOptionsList" v-key="option.key">
+          <div :class="['item', {'on': option.key == mock.responseKey}]" @click="switchMockData(mock, option)">{{option.key}}</div>
         </template>
       </div>
     </div>

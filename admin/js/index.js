@@ -5,16 +5,16 @@ new Vue({
   },
   methods: {
     switchMockData: function (mock, option) {
-      if (mock.responseKey === option.name) return
+      if (mock.responseKey === option.key) return
       $.ajax({
         url: './update',
         data: {
-          apiName: mock.name,
-          responseKey: option.name
+          mockName: mock.name,
+          responseKey: option.key
         },
         dataType: 'json',
         success: function (data) {
-          mock.responseKey = option.name
+          mock.responseKey = option.key
         }
       })
     }
