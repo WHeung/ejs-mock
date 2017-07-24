@@ -59,7 +59,7 @@ function requestHandler (req, res, config) {
   var allMocks = getAllMocks(config.mockPath)
   var mocks = matchMocks(allMocks, req.url)
   if (mocks) {
-    var mock = mocks[0]
+    var mock = Object.assign({}, mocks[0])
     var mockData = getMockData(config, mock, query)
     mock.appPath = config.appPath
     CMPlugins.mount(mock, req, mockData, function (result) {
