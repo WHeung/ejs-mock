@@ -1,4 +1,5 @@
 var express = require('express')
+var bodyParser = require('body-parser');
 var _ = require('lodash')
 var path2Regexp = require('path-to-regexp')
 var fs = require('fs')
@@ -74,15 +75,32 @@ function requestHandler (req, res, config) {
 function initAdmin (app, config) {
   var adminStaticPath = path.join(__dirname, '/admin')
   app.use('/ejs-mock/admin', express.static(adminStaticPath))
-  app.get('/ejs-mock/admin/update', function (req, res, next) {
+  app.get('/ejs-mock/admin/update_response_key', function (req, res, next) {
     var urlParts = url.parse(req.url, true)
     var mockName = urlParts.query['mockName']
     var responseKey = urlParts.query['responseKey']
     if (_.isString(mockName) && _.isString(responseKey)) {
       updateUserSetting(mockName, responseKey, config)
-      res.send('{"code": 1}')
+      res.send('{"code": "200"}')
     } else {
-      res.send('{"code": 0, "errInfo": "param error"}')
+      res.send('{"code": "500", "errInfo": "param error"}')
+    }
+  })
+
+  app.post('/ejs-mock/admin/update_template', function (req, res, next) {
+    var template = req.body.template
+    var filePath = req.body.path
+    var templateFilePath = path.join(config.mockPath, filePath)
+    if (fs.existsSync(templateFilePath)) {
+      fs.writeFile(templateFilePath, template, function (err) {
+        if (err) {
+          res.send('{"code": "500", "errInfo": "wirte file fail"}')
+          return 
+        }
+        res.send('{"code": "200"}')
+      })
+    } else {
+      res.send('{"code": "500", "errInfo": "file no exist"}')
     }
   })
 
@@ -114,21 +132,20 @@ function initAdmin (app, config) {
   })
 }
 
-function updateUserSetting (apiName, responseKey, config) {
+function updateUserSetting (mockName, responseKey, config) {
   if (fs.existsSync(config.userSettingPath)) {
     fs.readFile(config.userSettingPath, 'utf8', function (err, data) {
       if (err) return console.log(err.stack)
       var setting = JSON.parse(data)
-      setting[apiName] = responseKey
+      setting[mockName] = responseKey
       setting = JSON.stringify(setting, null, 4)
       fs.writeFile(config.userSettingPath, setting, function (err) {
         if (err) console.log(err)
       })
     })
   } else {
-    var setting = {
-      apiName: responseKey
-    }
+    var setting = {}
+    setting[mockName] = responseKey
     setting = JSON.stringify(setting, null, 4)
     fs.writeFile(config.userSettingPath, setting, function (err) {
       if (err) console.log(err)
@@ -151,6 +168,7 @@ function initAPI (app, config) {
 
 function main (config) {
   var app = express()
+  app.use(bodyParser())
   initStaticServer(app, config)
   initAdmin(app, config)
   initAPI(app, config)
