@@ -9,7 +9,7 @@ var allPlugins = {
 function mount (mock, req, mockData, callback) {
   var plugins = mock.plugin
   if (_.isObject(plugins)) {
-    plugins = [mock]
+    plugins = [plugins]
   }
   if (!_.isArray(plugins)) {
     plugins = []
@@ -18,7 +18,7 @@ function mount (mock, req, mockData, callback) {
     name: 'default'
   })
   var env = {
-    appPath: mock.appPath,
+    mock: mock,
     req: req
   }
   loadPlugin(plugins, mockData, env, function (result) {

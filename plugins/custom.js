@@ -1,6 +1,6 @@
 var ejs = require('ejs')
 var _ = require('lodash')
-var globalFn = {
+var global = {
   number: function (len) {
     if (!_.isNumber(len)) {
       len = 10
@@ -17,7 +17,8 @@ var globalFn = {
 }
 
 function main (option, mockData, env, callback) {
-  var result = ejs.render(mockData, globalFn)
+  global = Object.assign(global, { $params: env.mock.params })
+  var result = ejs.render(mockData, global)
   callback(result)
 }
 

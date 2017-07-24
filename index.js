@@ -27,7 +27,7 @@ function matchMocks (allMocks, path) {
   }
 }
 
-function getMockData (config, mock, query) {
+function getMockData (config, mock) {
   var responseKey = mock.responseKey
 
   // user setting cover
@@ -55,13 +55,13 @@ function getAllMocks (mockPath) {
 
 function requestHandler (req, res, config) {
   var urlParts = url.parse(req.url, true)
-  var query = urlParts.query
   var allMocks = getAllMocks(config.mockPath)
-  var mocks = matchMocks(allMocks, req.url)
+  var mocks = matchMocks(allMocks, urlParts.pathname)
   if (mocks) {
     var mock = Object.assign({}, mocks[0])
-    var mockData = getMockData(config, mock, query)
+    var mockData = getMockData(config, mock)
     mock.appPath = config.appPath
+    mock.params = urlParts.query
     CMPlugins.mount(mock, req, mockData, function (result) {
       var json = JSON.parse(result)
       json.__matchMocks = mocks
