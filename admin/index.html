@@ -33,6 +33,7 @@
         <div class="btn btn-success" @click="saveTemplate" v-show="view === 'template'">Save option template</div>
         <div class="btn btn-info" @click="switchView('template')" v-show="view !== 'template'">Show option template</div>
         <div class="btn btn-info" @click="showData" v-show="view !== 'result'">Show response data</div>
+        <a class="btn btn-info" :href="curMock.url" target="_blank">Open in browser</a>
       </div>
       <div :class="['result', {'on': view === 'result'}]">
         <textarea id="editor2"></textarea>
