@@ -12,13 +12,13 @@
 <body>
   <div id="app">
     <div class="mocks">
-      <div class="add-mock" @click="addMock">Add Mock</div>
-      <div :class="['item', {'on': mock.name == curMock.name}]" v-for="mock in list" :key="mock.name" @click="switchMock(mock)">
-        {{mock.name}}
+      <div class="add-mock btn-success" @click="addMock">Add Mock</div>
+      <div :title="mock.url" :class="['item', {'on': mock.name == curMock.name}]" v-for="mock in list" :key="mock.name" @click="switchMock(mock)">
+        {{mock.name}}<span>{{mock.url}}</span>
       </div>
     </div>
     <div class="options">
-      <div class="add-option" @click="addOption">Add Option</div>
+      <div class="add-option btn-success" @click="addOption">Add Option</div>
       <template v-for="option in curMock.responseOptionsList" v-key="option.key">
         <div :class="['item', {'on': option.key == curOption.key}]" @click="switchMockData(curMock, option)">
           <div class="key">{{option.key}}</div>
@@ -29,10 +29,10 @@
     </div>
     <div class="panel">
       <div class="menus">
-        <div class="btn" @click="switchView('mock')" v-show="view !== 'mock'">Back</div>
-        <div class="btn" @click="switchView('template')" v-show="view !== 'template'">Show option template</div>
-        <div class="btn" @click="showData" v-show="view !== 'result'">Show response data</div>
-        <div class="btn" @click="saveTemplate" v-show="view === 'template'">Save option template</div>
+        <div class="btn btn-default" @click="switchView('mock')" v-show="view !== 'mock'">Back</div>
+        <div class="btn btn-success" @click="saveTemplate" v-show="view === 'template'">Save option template</div>
+        <div class="btn btn-info" @click="switchView('template')" v-show="view !== 'template'">Show option template</div>
+        <div class="btn btn-info" @click="showData" v-show="view !== 'result'">Show response data</div>
       </div>
       <div :class="['result', {'on': view === 'result'}]">
         <textarea id="editor2"></textarea>
@@ -60,7 +60,7 @@
         </div>
         <div class="item">
           <div class="tit"></div>
-          <div class="btn">Save</div>
+          <div class="save btn-success">Save</div>
         </div>
       </div>
       <div :class="['template', {'on': view === 'template'}]">

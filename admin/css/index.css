@@ -24,16 +24,11 @@
   margin-top: 10px;
   margin-left: 10px;
   margin-right: 10px;
-  color: #fff;
-  height: 34px;
-  line-height: 34px;
-  font-size: 16px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
   padding-right: 10px;
-  cursor: pointer;
-  background: #5acc42;
-  font-size: 18px;
   text-align: center;
-  border-radius: 5px;
 }
 .mocks .item{
   margin-top: 10px;
@@ -51,16 +46,20 @@
   background: #fff;
   font-size: 18px;
 }
+.mocks .item span{
+  font-size: 12px;
+  color: #999;
+  margin-left: 10px;
+}
 .mocks .item:hover{
-  border: 1px solid #5acc42;
+  border: 1px solid #449d44;
   border-right: 0px;
 }
 .mocks .item.on{
   background: #fff;
-  color: #5acc42;
-  border-top: 1px solid #5acc42;
-  border-bottom: 1px solid #5acc42;
-  border-left: 1px solid #5acc42;
+  color: #449d44;
+  border: 1px solid #449d44;
+  border-right: 0px;
   position: relative;
   z-index: 2;
 }
@@ -75,21 +74,15 @@
 }
 .options .add-option{
   margin-top: 10px;
-  color: #444;
   height: 30px;
   line-height: 30px;
   font-size: 16px;
   padding-right: 10px;
-  cursor: pointer;
-  background: #fff;
-  border: 1px solid #ddd;
   font-size: 14px;
   text-align: center;
-  transition: all ease .2s;
-  border-radius: 5px;
 }
 .options .add-option:hover{
-  border: 1px solid #5acc42;
+  border: 1px solid #449d44;
 }
 .options .item{
   width: 300px;
@@ -101,7 +94,7 @@
   transition: all ease .2s;
 }
 .options .item:hover{
-  border: 1px solid #5acc42;
+  border: 1px solid #449d44;
 }
 .options .item .key{
   padding:0 10px;
@@ -118,13 +111,13 @@
   padding:0 10px;
 }
 .options .item.on{
-  border-color: #5acc42;
+  border-color: #449d44;
   background: #fff;
   transform: scale(.98);
 }
 .options .item.on .key{
-  color: #5acc42;
-  border-bottom: 1px solid #5acc42;
+  color: #449d44;
+  border-bottom: 1px solid #449d44;
   text-align: left;
 }
 
@@ -146,17 +139,10 @@
   height: 30px;
   line-height: 30px;
   padding: 0 15px;
-  border: 1px solid #ddd;
-  background: #fff;
   font-size: 14px;
-  color: #444;
-  border-radius: 5px;
   margin-left: 10px;
-  cursor: pointer;
 }
-.menus .btn:hover{
-  border: 1px solid #5acc42;
-}
+
 .template,
 .mock-detail,
 .result{
@@ -202,19 +188,50 @@
   font-size: 16px;
   color: #888;
 }
-.mock-detail .btn{
+.mock-detail .save{
   height: 30px;
   line-height: 30px;
   padding: 0 15px;
-  border: 1px solid #ddd;
-  background: #fff;
   font-size: 14px;
+}
+
+.btn-success{
+  border: 1px solid #4cae4c;
+  background: #5cb85c;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all ease .2s;
+}
+.btn-success:hover{
+  background-color: #449d44;
+  border-color: #398439;
+}
+
+.btn-info{
+  border: 1px solid #46b8da;
+  background: #5bc0de;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all ease .2s;
+}
+.btn-info:hover{
+  background-color: #31b0d5;
+  border-color: #269abc;
+}
+
+.btn-default{
+  border: 1px solid #ccc;
+  background: #fff;
   color: #444;
   border-radius: 5px;
   cursor: pointer;
+  transition: all ease .2s;
 }
-.mock-detail .btn:hover{
-  border: 1px solid #5acc42;
+.btn-default:hover{
+  background-color: #e6e6e6;
+  border-color: #adadad;
 }
 
 .CodeMirror{
