@@ -160,6 +160,66 @@
   visibility: visible;
 }
 
+.result{
+  top: 101px;
+}
+.result .result-btns{
+  top: -50px;
+  position: absolute;
+  left: 0px;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+.result .query{
+  width: 300px;
+  height: 30px;
+  display: flex;
+  margin-left: 10px;
+}
+.result .query label{
+  background: #eee;
+  color: #666;
+  text-align: center;
+  height: 28px;
+  width: 30px;
+  line-height: 28px;
+  border: 1px solid #ccc;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.result .query .input-wrap{
+  height: 28px;
+  padding-left: 5px;
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  border: 1px solid #ddd;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-left: 0px;
+}
+.result .query .input-wrap input{
+  height: 20px;
+  border: 0px;
+  width: 90%;
+  outline: none;
+  font-size: 16px;
+  color: #888;
+}
+.result .refresh{
+  height: 28px;
+  line-height: 28px;
+  padding: 0 15px;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
 .mock-detail .item{
   display: flex;
   padding-left: 20px;

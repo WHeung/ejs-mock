@@ -8,7 +8,8 @@ new Vue({
     list: [],
     curMock: {},
     curOption: {},
-    view: 'mock'
+    view: 'mock',
+    query: ''
   },
   methods: {
     switchMockData: function (mock, option) {
@@ -60,7 +61,7 @@ new Vue({
     showData () {
       this.switchView('result')
       $.ajax({
-        url: this.curMock.url,
+        url: this.curMock.url + `?${this.query}`,
         dataType: 'json',
         success: function (data) {
           editor2.setValue(JSON.stringify(data, null, 2))

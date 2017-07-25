@@ -36,6 +36,15 @@
         <a class="btn btn-info" :href="curMock.url" target="_blank">Open in browser</a>
       </div>
       <div :class="['result', {'on': view === 'result'}]">
+        <div class="result-btns">
+          <div class="query">
+            <label>?</label>
+            <div class="input-wrap">
+              <input type="text" v-model="query"/>
+            </div>
+          </div>
+          <div class="refresh btn-info" @click="showData">Refresh result</div>
+        </div>
         <textarea id="editor2"></textarea>
       </div>
       <div :class="['mock-detail', {'on': view === 'mock'}]">
