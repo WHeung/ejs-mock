@@ -14,7 +14,8 @@
     <div class="mocks">
       <div class="add-mock btn-success" @click="addMock">Add Mock</div>
       <div :title="mock.url" :class="['item', {'on': mock.name == curMock.name}]" v-for="mock in list" :key="mock.name" @click="switchMock(mock)">
-        {{mock.name}}<span>{{mock.url}}</span>
+        <div class="name">{{mock.name}}</div>
+        <div class="url">{{mock.url}}</div>
       </div>
     </div>
     <div class="options">
