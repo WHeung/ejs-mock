@@ -17,7 +17,7 @@ var global = {
 }
 
 function main (option, mockData, env, callback) {
-  global = Object.assign(global, { $params: env.mock.params })
+  global = Object.assign(global, { params: env.mock.params })
   var result = ejs.render(mockData, global)
   callback(result)
 }
