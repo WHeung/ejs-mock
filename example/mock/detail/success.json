@@ -1,6 +1,6 @@
 {
   "data": [{
-    "content": "hello <%= 'ejs' %>"
+    "content": "hello <%= 'ejs' %> <%= params.xxx %>"
   }],
   "status": {
     "code": 200
