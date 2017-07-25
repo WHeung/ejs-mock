@@ -1,8 +1,8 @@
 {
   "data": [
-<% _.times(9, String).forEach(function () {%>
+<% _.times(9, String).forEach(function (val, i) {%>
     {
-      "content": "hello world<%=number(8)%>"
+      "content": "hello world<%=i%>  <%=number(8)%>"
     },
 <% }) %>
     {
