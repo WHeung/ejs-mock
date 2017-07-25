@@ -4,10 +4,10 @@
   "url": "/detail",
   "method": "GET",
   "dataType": "JSON",
-  "responseKey": "sucess",
+  "responseKey": "success",
   "responseOptions": {
-    "sucess": {
-      "desc": "sucess response",
+    "success": {
+      "desc": "success response",
       "path": "./detail/success.json"
     },
     "fail": {
