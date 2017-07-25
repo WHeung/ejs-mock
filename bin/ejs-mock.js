@@ -7,7 +7,7 @@ var fs = require('fs')
 var path = require('path')
 
 program
-  .version('0.0.11')
+  .version('0.0.12')
 
 program
   .command('start')
