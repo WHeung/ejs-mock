@@ -60,8 +60,10 @@ new Vue({
     },
     showData () {
       this.switchView('result')
+      var url = this.curMock.url
+      url = url.replace(/\:\w+/g, 'foo')
       $.ajax({
-        url: this.curMock.url + `?${this.query}`,
+        url: url + `?${this.query}`,
         dataType: 'json',
         success: function (data) {
           editor2.setValue(JSON.stringify(data, null, 2))
