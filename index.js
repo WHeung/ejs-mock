@@ -42,7 +42,7 @@ function matchMocks (allMocks, path) {
   }
 }
 
-function getMockData (config, mock) {
+function getOption (config, mock) {
   var responseKey = mock.responseKey
 
   // user setting cover
@@ -54,10 +54,7 @@ function getMockData (config, mock) {
     }
   }
 
-  var option = mock.responseOptions[responseKey]
-  var filePath = path.join(config.mockPath, option.path)
-  var mockData = fs.readFileSync(filePath, 'utf8')
-  return mockData
+  return mock.responseOptions[responseKey]
 }
 
 function getAllMocks (mockPath) {
@@ -74,15 +71,22 @@ function requestHandler (req, res, config) {
   var mocks = matchMocks(allMocks, urlParts.pathname)
   if (mocks) {
     var mock = Object.assign({}, mocks[0])
-    var mockData = getMockData(config, mock)
-    mock.appPath = config.appPath
-    mock.query = urlParts.query
-    mock.params = getParams(mock.url, urlParts.pathname)
-    CMPlugins.mount(mock, req, mockData, function (result) {
-      var json = JSON.parse(result)
-      json.__matchMocks = mocks
-      res.send(JSON.stringify(json))
-    })
+    var option = getOption(config, mock)
+    if (_.isNumber(option.statusCode) && option.statusCode !== 200) {
+      res.status(option.statusCode)
+      res.send(option.statusCode)
+    } else {
+      var filePath = path.join(config.mockPath, option.path)
+      var mockData = fs.readFileSync(filePath, 'utf8')
+      mock.appPath = config.appPath
+      mock.query = urlParts.query
+      mock.params = getParams(mock.url, urlParts.pathname)
+      CMPlugins.mount(mock, req, mockData, function (result) {
+        var json = JSON.parse(result)
+        json.__matchMocks = mocks
+        res.send(JSON.stringify(json))
+      })
+    }
   } else {
     res.send('{"code": 0, "errInfo": "no api"}')
   }
@@ -133,7 +137,15 @@ function initAdmin (app, config) {
       for (var key in mock.responseOptions) {
         var option = mock.responseOptions[key]
         option.key = key
-        option.template = fs.readFileSync(path.join(config.mockPath, option.path), 'utf8')
+        if (option.path) {
+          option.template = fs.readFileSync(path.join(config.mockPath, option.path), 'utf8')
+        } else {
+          if (option.statusCode) {
+            option.template = option.statusCode + ''
+          } else {
+            option.template = 'ejsmock error: not found path and not found statusCode'
+          }
+        }
         mock.responseOptionsList.push(option)
       }
       if (setting[mockName]) {

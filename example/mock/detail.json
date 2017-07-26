@@ -13,6 +13,10 @@
     "fail": {
       "desc": "fail response",
       "path": "./detail/fail.json"
+    },
+    "statusCode_500": {
+      "desc": "statusCode 500",
+      "statusCode": 500
     }
   }
 }
