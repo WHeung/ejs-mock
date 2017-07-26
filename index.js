@@ -78,7 +78,6 @@ function requestHandler (req, res, config) {
     mock.appPath = config.appPath
     mock.query = urlParts.query
     mock.params = getParams(mock.url, urlParts.pathname)
-    console.log(mock)
     CMPlugins.mount(mock, req, mockData, function (result) {
       var json = JSON.parse(result)
       json.__matchMocks = mocks
