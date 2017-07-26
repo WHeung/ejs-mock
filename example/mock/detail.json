@@ -1,7 +1,7 @@
 {
   "name": "detail",
   "describe": "detial data",
-  "url": "/detail",
+  "url": "/detail/:id",
   "method": "GET",
   "dataType": "JSON",
   "responseKey": "success",

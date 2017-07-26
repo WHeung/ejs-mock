@@ -15,13 +15,28 @@ var getEachAPI = function (dir, fn) {
   })
 }
 
+function getParams (route, pathname) {
+  var params = {}
+  var keys = []
+  var reg = path2Regexp(route, keys)
+  var m = pathname.match(reg)
+  if (keys.length > 0) {
+    for (var i = 1; i < m.length; ++i) {
+      var key = keys[i - 1]
+      var val = typeof m[i] === 'string' ? decodeURIComponent(m[i]) : m[i]
+      if (key) params[key.name] = val
+    }
+  }
+  return params
+}
+
 function matchMocks (allMocks, path) {
-  var reg = path2Regexp(path)
-  var result = allMocks.filter(function (config) {
-    return reg.test(config.url)
+  var mocks = allMocks.filter(function (config) {
+    var reg = path2Regexp(config.url)
+    return reg.test(path)
   })
-  if (result.length > 0) {
-    return result
+  if (mocks.length > 0) {
+    return mocks
   } else {
     return null
   }
@@ -61,7 +76,9 @@ function requestHandler (req, res, config) {
     var mock = Object.assign({}, mocks[0])
     var mockData = getMockData(config, mock)
     mock.appPath = config.appPath
-    mock.params = urlParts.query
+    mock.query = urlParts.query
+    mock.params = getParams(mock.url, urlParts.pathname)
+    console.log(mock)
     CMPlugins.mount(mock, req, mockData, function (result) {
       var json = JSON.parse(result)
       json.__matchMocks = mocks
