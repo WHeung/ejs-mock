@@ -200,7 +200,7 @@ function main (config) {
   initStaticServer(app, config)
   initAdmin(app, config)
   initAPI(app, config)
-  app.listen(config.port || 3000, '127.0.0.1')
+  app.listen(config.port || 3000, config.ip || '127.0.0.1')
 }
 
 module.exports = main

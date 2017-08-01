@@ -6,7 +6,7 @@
     },
 <% }) %>
     {
-      "content": "hello world<%=number(8)%>"
+      "content": "hello world<%=query.id%>"
     }],
   "status": {
     "code": 200
