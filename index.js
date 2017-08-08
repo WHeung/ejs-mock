@@ -6,14 +6,8 @@ var fs = require('fs')
 var path = require('path')
 var url = require('url')
 var CMPlugins = require('./plugins/')
-
-var getEachAPI = function (dir, fn) {
-  fs.readdirSync(dir).forEach(function (file) {
-    if (!/.json$/.test(file)) return
-    file = dir + '/' + file
-    fn(JSON.parse(fs.readFileSync(file, 'utf8')))
-  })
-}
+var initAdmin = require('./admin/server.js')
+var mockFile = require('./lib/mockFile.js')
 
 function getParams (route, pathname) {
   var params = {}
@@ -42,36 +36,13 @@ function matchMocks (allMocks, path) {
   }
 }
 
-function getOption (config, mock) {
-  var responseKey = mock.responseKey
-
-  // user setting cover
-  if (fs.existsSync(config.userSettingPath)) {
-    var setting = fs.readFileSync(config.userSettingPath, 'utf8')
-    setting = JSON.parse(setting)
-    if (_.isString(setting[mock.name])) {
-      responseKey = setting[mock.name]
-    }
-  }
-
-  return mock.responseOptions[responseKey]
-}
-
-function getAllMocks (mockPath) {
-  var list = []
-  getEachAPI(mockPath, function (apiConfig) {
-    list.push(apiConfig)
-  })
-  return list
-}
-
 function requestHandler (req, res, config) {
   var urlParts = url.parse(req.url, true)
-  var allMocks = getAllMocks(config.mockPath)
+  var allMocks = mockFile.getAllMocks(config.mockPath)
   var mocks = matchMocks(allMocks, urlParts.pathname)
   if (mocks) {
     var mock = Object.assign({}, mocks[0])
-    var option = getOption(config, mock)
+    var option = mockFile.getOption(config, mock)
     if (_.isNumber(option.statusCode) && option.statusCode !== 200) {
       res.status(option.statusCode)
       res.send(option.statusCode)
@@ -79,7 +50,7 @@ function requestHandler (req, res, config) {
       var filePath = path.join(config.mockPath, option.path)
       var mockData = fs.readFileSync(filePath, 'utf8')
       mock.appPath = config.appPath
-      mock.query = urlParts.query
+      mock.query = Object.assign({}, urlParts.query, req.body)
       mock.params = getParams(mock.url, urlParts.pathname)
       CMPlugins.mount(mock, req, mockData, function (result) {
         var json = JSON.parse(result)
@@ -89,95 +60,6 @@ function requestHandler (req, res, config) {
     }
   } else {
     res.send('{"code": 0, "errInfo": "no api"}')
-  }
-}
-
-function initAdmin (app, config) {
-  var adminStaticPath = path.join(__dirname, '/admin')
-  app.use('/ejs-mock/admin', express.static(adminStaticPath))
-  app.get('/ejs-mock/admin/update_response_key', function (req, res, next) {
-    var urlParts = url.parse(req.url, true)
-    var mockName = urlParts.query['mockName']
-    var responseKey = urlParts.query['responseKey']
-    if (_.isString(mockName) && _.isString(responseKey)) {
-      updateUserSetting(mockName, responseKey, config)
-      res.send('{"code": "200"}')
-    } else {
-      res.send('{"code": "500", "errInfo": "param error"}')
-    }
-  })
-
-  app.post('/ejs-mock/admin/update_template', function (req, res, next) {
-    var template = req.body.template
-    var filePath = req.body.path
-    var templateFilePath = path.join(config.mockPath, filePath)
-    if (fs.existsSync(templateFilePath)) {
-      fs.writeFile(templateFilePath, template, function (err) {
-        if (err) {
-          res.send('{"code": "500", "errInfo": "wirte file fail"}')
-          return 
-        }
-        res.send('{"code": "200"}')
-      })
-    } else {
-      res.send('{"code": "500", "errInfo": "file no exist"}')
-    }
-  })
-
-  app.get('/ejs-mock/admin/list', function (req, res, next) {
-    var allMocks = getAllMocks(config.mockPath)
-    var setting = {}
-    if (fs.existsSync(config.userSettingPath)) {
-      setting = fs.readFileSync(config.userSettingPath, 'utf8')
-      setting = JSON.parse(setting)
-    }
-    allMocks.forEach(function (mock) {
-      var mockName = mock.name
-      mock.responseOptionsList = []
-      for (var key in mock.responseOptions) {
-        var option = mock.responseOptions[key]
-        option.key = key
-        if (option.path) {
-          option.template = fs.readFileSync(path.join(config.mockPath, option.path), 'utf8')
-        } else {
-          if (option.statusCode) {
-            option.template = option.statusCode + ''
-          } else {
-            option.template = 'ejsmock error: not found path and not found statusCode'
-          }
-        }
-        mock.responseOptionsList.push(option)
-      }
-      if (setting[mockName]) {
-        mock.responseKey = setting[mockName]
-      }
-    })
-    var data = {
-      code: 1,
-      data: allMocks
-    }
-    res.send(data)
-  })
-}
-
-function updateUserSetting (mockName, responseKey, config) {
-  if (fs.existsSync(config.userSettingPath)) {
-    fs.readFile(config.userSettingPath, 'utf8', function (err, data) {
-      if (err) return console.log(err.stack)
-      var setting = JSON.parse(data)
-      setting[mockName] = responseKey
-      setting = JSON.stringify(setting, null, 4)
-      fs.writeFile(config.userSettingPath, setting, function (err) {
-        if (err) console.log(err)
-      })
-    })
-  } else {
-    var setting = {}
-    setting[mockName] = responseKey
-    setting = JSON.stringify(setting, null, 4)
-    fs.writeFile(config.userSettingPath, setting, function (err) {
-      if (err) console.log(err)
-    })
   }
 }
 
