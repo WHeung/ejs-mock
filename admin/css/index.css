@@ -11,6 +11,19 @@
   bottom: 0;
   right: 0;
 }
+.mask-layer-enter-active {
+  transition: all .3s ease;
+}
+
+.mask-layer-leave-active {
+  transition: all .3s ease;
+}
+
+.mask-layer-enter,
+.mask-layer-leave-active {
+  opacity: 0;
+}
+
 .mocks{
   width: 240px;
   border-right: 1px solid #ddd;
@@ -19,7 +32,7 @@
   top: 0;
   left: 0;
   bottom: 0;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .mocks .add-mock{
   margin-top: 10px;
@@ -82,6 +95,7 @@
   left: 241px;
   bottom: 0;
   border-right: 1px solid #ddd;
+  overflow-y: auto;
 }
 .options .add-option{
   margin-top: 10px;
@@ -310,4 +324,77 @@
 }
 .CodeMirror *{
   font-family: Courier New, Courier, monospace;
+}
+
+.mask-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, .7);
+  z-index: 5;
+}
+.mask-con {
+  flex: 0 0 auto;
+  position: relative;
+  background: #fff;
+  padding: 0 60px 50px;
+  border-radius: 2px;
+}
+.mask-close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: #5cb85c;
+  padding: 5px 12px;
+  font-size: 21px;
+}
+.mock-form .title{
+  font-size: 24px;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+.mock-form .item{
+  display: flex;
+  margin-top: 10px;
+}
+.mock-form .tit{
+  width: 100px;
+  height: 28px;
+  line-height: 28px;
+  font-size: 18px;
+}
+.mock-form .con{
+  height: 28px;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  width: 300px;
+  border: 1px solid #ddd;
+  background: #fff;
+}
+.mock-form input{
+  height: 20px;
+  border: 0px;
+  width: 90%;
+  outline: none;
+  font-size: 16px;
+}
+.mock-form textarea {
+  font-size: 16px;
+}
+.mock-form .btn-item{
+  margin-top: 20px;
+}
+.mock-form .btn-success{
+  height: 30px;
+  line-height: 30px;
+  padding: 0 15px;
+  font-size: 14px;
+  float: right;
 }

@@ -9,7 +9,10 @@ new Vue({
     curMock: {},
     curOption: {},
     view: 'mock',
-    query: ''
+    query: '',
+    mask: null,
+    mockForm: {},
+    optionForm: {}
   },
   methods: {
     switchMockData: function (mock, option) {
@@ -33,10 +36,34 @@ new Vue({
       this.curOption = mock.responseOptions[mock.responseKey]
     },
     addMock: function () {
-
+      this.mask = 'mock'
     },
     addOption: function () {
-      
+      this.mask = 'option'
+    },
+    saveMock: function () {
+      console.log(this.mockForm)
+      this.mask = null
+    },
+    saveOption: function () {
+      console.log(this.optionForm)
+      console.log(this.curMock.responseOptions)
+      const options = this.curMock.responseOptionsList
+      if (options && options.length) {
+        const index = options.findIndex(item => {
+          return item.key === this.optionForm.name
+        })
+        if (index >= 0) {
+          window.alert('you already have this response')
+          return
+        }
+      }
+      this.mask = null
+    },
+    closeMask: function () {
+      this.mockForm = {}
+      this.option = []
+      this.mask = null
     },
     saveTemplate: function () {
       var val = editor1.getValue()

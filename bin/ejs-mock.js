@@ -55,8 +55,8 @@ program
     config.mockPath = path.join(config.appPath, config.mockPath)
 
     EjsMock(config)
-    console.log('start ejs-mock server http://localhost:8080')
-    console.log('visit ejs-mock admin http://localhost:8080/ejs-mock/admin')
+    console.log(`start ejs-mock server http://localhost:${config.port}`)
+    console.log(`visit ejs-mock admin http://localhost:${config.port}/ejs-mock/admin`)
   })
 
 program.parse(process.argv)

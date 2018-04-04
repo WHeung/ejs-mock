@@ -79,6 +79,59 @@
         <textarea id="editor1"></textarea>
       </div>
     </div>
+    <transition name="mask-layer">
+      <div class="mask-layer" v-if="mask">
+        <div class="mask-con">
+          <div class="mask-close" @click="closeMask">x</div>
+          <div class="mock-form" v-if="mask === 'mock'">
+            <div class="title">Add Mock</div>
+            <div class="item">
+              <div class="tit">name</div>
+              <div class="con"><input type="text" v-model.trim="mockForm.name"/></div>
+            </div>
+            <div class="item">
+              <div class="tit">describe</div>
+              <div class="con"><input type="text" v-model="mockForm.describe"/></div>
+            </div>
+            <div class="item">
+              <div class="tit">url</div>
+              <div class="con"><input type="text" v-model.trim="mockForm.url"/></div>
+            </div>
+            <div class="item">
+              <div class="tit">method</div>
+              <div class="con"><input type="text" v-model="mockForm.method"/></div>
+            </div>
+            <div class="item">
+              <div class="tit">dataType</div>
+              <div class="con"><input type="text" v-model="mockForm.dataType"/></div>
+            </div>
+            <div class="btn-item">
+              <div class="btn-success" @click="saveMock">Save</div>
+            </div>
+          </div>
+          <div class="mock-form" v-if="mask === 'option'">
+            <div class="title">Add Option</div>
+            <div class="item">
+              <div class="tit">name</div>
+              <div class="con"><input type="text" v-model.trim="optionForm.name"/></div>
+            </div>
+            <div class="item">
+              <div class="tit">desc</div>
+              <div class="con"><input type="text" v-model="optionForm.desc"/></div>
+            </div>
+            <div class="item">
+              <div class="tit">template</div>
+              <div>
+                <textarea type="text" rows="15" cols="38" v-model.trim="optionForm.template"/></textarea>
+              </div>
+            </div>
+            <div class="btn-item">
+              <div class="btn-success" @click="saveOption">Save</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </transition>
   </div>
 <script src="./js/jquery.js"></script>
 <script src="./js/vue.js"></script>
