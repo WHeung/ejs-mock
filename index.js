@@ -130,6 +130,59 @@ function initAdmin (app, config) {
     }
     res.send(data)
   })
+  app.post('/ejs-mock/admin/update_mock', function (req, res, next) {
+    var key = req.body.name
+    var mockPath = path.join(config.mockPath, key + '.json')
+    if (!req.body.name) {
+      res.end('{"code": "30001", "errInfo": "params no exist"}')
+      return
+    }
+    if (!req.body.url) {
+      res.end('{"code": "30001", "errInfo": "params no exist"}')
+      return
+    }
+    if (!req.body.method) {
+      res.end('{"code": "30001", "errInfo": "params no exist"}')
+      return
+    }
+    if (!req.body.dataType) {
+      res.end('{"code": "30001", "errInfo": "params no exist"}')
+      return
+    }
+    fs.open(mockPath, 'w+', function(err, fd) {
+      fs.writeFile(mockPath, JSON.stringify(req.body, ['name', 'describe', 'url', 'method', 'dataType']), (err) => {
+        if (err) throw err;
+        res.send('{"code": "200"}')
+      })
+    })
+  })
+  app.post('/ejs-mock/admin/update_option', function (req, res, next) {
+    var key = req.body.mockName
+    var optionsPath = path.join(config.mockPath, key)
+    var mockPath = path.join(config.mockPath, key + '.json')
+    if (!req.body.name) {
+      res.end('{"code": "30001", "errInfo": "params no exist"}')
+      return
+    }
+    if (!req.body.template) {
+      res.end('{"code": "30001", "errInfo": "params no exist"}')
+      return
+    }
+    var templatePath = path.join(optionsPath, req.body.name + '.json')
+    fs.mkdir(optionsPath, function(err, fd) {
+      fs.writeFileSync(templatePath, req.body.template)
+      var mock = JSON.parse(fs.readFileSync(mockPath))
+      console.log(mock)
+      !mock.responseOptions && (mock.responseOptions = {})
+      var option = mock.responseOptions
+      !option[req.body.name] && (option[req.body.name] = {})
+      option[req.body.name].desc = req.body.desc
+      option[req.body.name].path = path.relative(config.mockPath, templatePath)
+      !mock.responseKey && (mock.responseKey = [req.body.name])
+      fs.writeFileSync(mockPath, JSON.stringify(mock))
+      res.send('{"code": "200"}')
+    })
+  })
 }
 
 function updateUserSetting (mockName, responseKey, config) {

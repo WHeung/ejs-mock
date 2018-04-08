@@ -352,6 +352,7 @@
   color: #5cb85c;
   padding: 5px 12px;
   font-size: 21px;
+  cursor: pointer;
 }
 .mock-form .title{
   font-size: 24px;

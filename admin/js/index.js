@@ -15,6 +15,22 @@ new Vue({
     optionForm: {}
   },
   methods: {
+    initList () {
+      var self = this
+      $.ajax({
+        url: './list',
+        dataType: 'json',
+        success: function (data) {
+          self.list = data.data
+          self.curMock = self.list[0]
+          if (self.curMock.responseKey && self.curMock.responseOptions && typeof self.curMock.responseOptions === 'object') {
+            self.curOption = self.curMock.responseOptions[self.curMock.responseKey]
+          } else {
+            self.curOption = {}
+          }
+        }
+      })
+    },
     switchMockData: function (mock, option) {
       if (mock.responseKey === option.key) return
       var self = this
@@ -33,7 +49,7 @@ new Vue({
     },
     switchMock: function (mock) {
       this.curMock = mock
-      this.curOption = mock.responseOptions[mock.responseKey]
+      this.curOption = mock.responseOptions && typeof mock.responseOptions === 'object' ? mock.responseOptions[mock.responseKey] : {}
     },
     addMock: function () {
       this.mask = 'mock'
@@ -42,8 +58,16 @@ new Vue({
       this.mask = 'option'
     },
     saveMock: function () {
-      console.log(this.mockForm)
-      this.mask = null
+      $.ajax({
+        url: './update_mock',
+        method: 'POST',
+        data: this.mockForm,
+        dataType: 'json',
+        success: () => {
+          this.initList()
+          this.closeMask()
+        }
+      })
     },
     saveOption: function () {
       console.log(this.optionForm)
@@ -58,7 +82,29 @@ new Vue({
           return
         }
       }
-      this.mask = null
+      $.ajax({
+        url: './update_option',
+        method: 'POST',
+        data: {
+          mockName: this.curMock.name,
+          ...this.optionForm
+        },
+        dataType: 'json',
+        success: () => {
+          $.ajax({
+            url: './list',
+            dataType: 'json',
+            success: (data) => {
+              this.list = data.data
+              this.curMock = this.list.find(item => {
+                return item.name === this.curMock.name
+              })
+              this.curOption = this.curMock.responseOptions[this.curMock.responseKey]
+            }
+          })
+          this.closeMask()
+        }
+      })
     },
     closeMask: function () {
       this.mockForm = {}
@@ -107,16 +153,7 @@ new Vue({
     }
   },
   mounted: function () {
-    var self = this
-    $.ajax({
-      url: './list',
-      dataType: 'json',
-      success: function (data) {
-        self.list = data.data
-        self.curMock = self.list[0]
-        self.curOption = self.curMock.responseOptions[self.curMock.responseKey]
-      }
-    })
+    this.initList()
   }
 })
 
