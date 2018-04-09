@@ -71,25 +71,27 @@ new Vue({
         }
       })
     },
-    saveOption: function () {
-      console.log(this.optionForm)
+    saveOption: function (optionData, type) {
       console.log(this.curMock.responseOptions)
       const options = this.curMock.responseOptionsList
-      if (options && options.length) {
+      if (type === 'add' && options && options.length) {
         const index = options.findIndex(item => {
-          return item.key === this.optionForm.name
+          return item.key === optionData.name
         })
         if (index >= 0) {
           window.alert('you already have this response')
           return
         }
       }
+      if (type === 'change' && optionData.key && !optionData.name) {
+        optionData.name = optionData.key
+      }
       $.ajax({
         url: './update_option',
         method: 'POST',
         data: {
           mockName: this.curMock.name,
-          ...this.optionForm
+          ...optionData
         },
         dataType: 'json',
         success: () => {

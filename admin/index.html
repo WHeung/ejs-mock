@@ -31,7 +31,7 @@
     <div class="panel">
       <div class="menus">
         <div class="btn btn-default" @click="switchView('mock')" v-show="view !== 'mock'">Back</div>
-        <div class="btn btn-success" @click="saveTemplate" v-show="view === 'template'">Save option template</div>
+        <div class="btn btn-success" v-show="view === 'template'">Show option template</div>
         <div class="btn btn-info" @click="switchView('template')" v-show="view !== 'template'">Show option template</div>
         <div class="btn btn-success" v-show="view === 'result'">Show response data</div>
         <div class="btn btn-info" @click="showData" v-show="view !== 'result'">Show response data</div>
@@ -75,8 +75,25 @@
           <div class="save btn-success" @click="saveMock(curMock)">Save</div>
         </div>
       </div>
-      <div :class="['template', {'on': view === 'template'}]">
-        <textarea :value="curOption.template" rows="50" cols="72"></textarea>
+      <div :class="['mock-detail', 'template', {'on': view === 'template'}]">
+        <div class="item">
+          <div class="tit">name</div>
+          <div class="con" style="background: #ddd;"><input style="background: #ddd;" type="text" :value="curOption.key" readonly/></div>
+        </div>
+        <div class="item">
+          <div class="tit">desc</div>
+          <div class="con"><input type="text" v-model="curOption.desc"/></div>
+        </div>
+        <div class="item">
+          <div class="tit" style="min-width: 100px;">template</div>
+          <div>
+            <textarea style="background: #FEFEFE;" v-model="curOption.template" rows="50" cols="60"></textarea>
+          </div>
+        </div>
+        <div class="item">
+          <div class="tit"></div>
+          <div class="save btn-success" @click="saveOption(curOption, 'change')">Save</div>
+        </div>
       </div>
     </div>
     <transition name="mask-layer">
@@ -122,11 +139,11 @@
             <div class="item">
               <div class="tit">template</div>
               <div>
-                <textarea type="text" rows="15" cols="38" v-model.trim="optionForm.template"/></textarea>
+                <textarea style="background: #FEFEFE;" type="text" rows="15" cols="38" v-model.trim="optionForm.template"/></textarea>
               </div>
             </div>
             <div class="btn-item">
-              <div class="btn-success" @click="saveOption">Save</div>
+              <div class="btn-success" @click="saveOption(optionForm, 'add')">Save</div>
             </div>
           </div>
         </div>
