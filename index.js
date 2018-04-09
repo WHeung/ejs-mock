@@ -149,11 +149,26 @@ function initAdmin (app, config) {
       res.end('{"code": "30001", "errInfo": "params no exist"}')
       return
     }
-    fs.open(mockPath, 'w+', function(err, fd) {
-      fs.writeFile(mockPath, JSON.stringify(req.body, ['name', 'describe', 'url', 'method', 'dataType']), (err) => {
-        if (err) throw err;
+    var mock = {
+      name: req.body.name,
+      describe: req.body.describe,
+      url: req.body.url,
+      method: req.body.method,
+      dataType: req.body.dataType
+    }
+    fs.readFile(mockPath, function (err, data) {
+      if (err) {
+        if (err.code === 'ENOENT') {
+          fs.writeFileSync(mockPath, JSON.stringify(mock))
+          res.send('{"code": "200"}')
+        } else {
+          throw err
+        }
+      } else {
+        mock = Object.assign(JSON.parse(data), mock)
+        fs.writeFileSync(mockPath, JSON.stringify(mock))
         res.send('{"code": "200"}')
-      })
+      }
     })
   })
   app.post('/ejs-mock/admin/update_option', function (req, res, next) {

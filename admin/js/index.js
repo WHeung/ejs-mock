@@ -22,7 +22,7 @@ new Vue({
         dataType: 'json',
         success: function (data) {
           self.list = data.data
-          self.curMock = self.list[0]
+          self.curMock = JSON.parse(JSON.stringify(self.list[0]))
           if (self.curMock.responseKey && self.curMock.responseOptions && typeof self.curMock.responseOptions === 'object') {
             self.curOption = self.curMock.responseOptions[self.curMock.responseKey]
           } else {
@@ -48,20 +48,22 @@ new Vue({
       })
     },
     switchMock: function (mock) {
-      this.curMock = mock
+      this.curMock = JSON.parse(JSON.stringify(mock))
       this.curOption = mock.responseOptions && typeof mock.responseOptions === 'object' ? mock.responseOptions[mock.responseKey] : {}
     },
     addMock: function () {
+      this.mockForm = {}
       this.mask = 'mock'
     },
     addOption: function () {
+      this.optionForm = {}
       this.mask = 'option'
     },
-    saveMock: function () {
+    saveMock: function (mockData) {
       $.ajax({
         url: './update_mock',
         method: 'POST',
-        data: this.mockForm,
+        data: mockData,
         dataType: 'json',
         success: () => {
           this.initList()

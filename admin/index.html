@@ -72,11 +72,11 @@
         </div>
         <div class="item">
           <div class="tit"></div>
-          <div class="save btn-success">Save</div>
+          <div class="save btn-success" @click="saveMock(curMock)">Save</div>
         </div>
       </div>
       <div :class="['template', {'on': view === 'template'}]">
-        <textarea id="editor1"></textarea>
+        <textarea :value="curOption.template" rows="50" cols="72"></textarea>
       </div>
     </div>
     <transition name="mask-layer">
@@ -106,7 +106,7 @@
               <div class="con"><input type="text" v-model="mockForm.dataType"/></div>
             </div>
             <div class="btn-item">
-              <div class="btn-success" @click="saveMock">Save</div>
+              <div class="btn-success" @click="saveMock(mockForm)">Save</div>
             </div>
           </div>
           <div class="mock-form" v-if="mask === 'option'">
