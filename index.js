@@ -6,6 +6,8 @@ var fs = require('fs')
 var path = require('path')
 var url = require('url')
 var CMPlugins = require('./plugins/')
+var async = require("async")
+var colors = require('colors')
 
 var getEachAPI = function (dir, fn) {
   fs.readdirSync(dir).forEach(function (file) {
@@ -75,6 +77,36 @@ function requestHandler (req, res, config) {
 function initAdmin (app, config) {
   var adminStaticPath = path.join(__dirname, '/admin')
   app.use('/ejs-mock/admin', express.static(adminStaticPath))
+}
+
+function initAdminAPI (app, config) {
+  app.get('/ejs-mock/admin/list', function (req, res, next) {
+    var allMocks = getAllMocks(config.mockPath)
+    var setting = {}
+    if (fs.existsSync(config.userSettingPath)) {
+      setting = fs.readFileSync(config.userSettingPath, 'utf8')
+      setting = JSON.parse(setting)
+    }
+    allMocks.forEach(function (mock) {
+      var mockName = mock.name
+      mock.responseOptionsList = []
+      for (var key in mock.responseOptions) {
+        var option = mock.responseOptions[key]
+        option.key = key
+        option.template = fs.readFileSync(path.join(config.mockPath, option.path), 'utf8')
+        mock.responseOptionsList.push(option)
+      }
+      if (setting[mockName]) {
+        mock.responseKey = setting[mockName]
+      }
+    })
+    var data = {
+      code: 1,
+      data: allMocks
+    }
+    res.send(data)
+  })
+
   app.get('/ejs-mock/admin/update_response_key', function (req, res, next) {
     var urlParts = url.parse(req.url, true)
     var mockName = urlParts.query['mockName']
@@ -104,32 +136,6 @@ function initAdmin (app, config) {
     }
   })
 
-  app.get('/ejs-mock/admin/list', function (req, res, next) {
-    var allMocks = getAllMocks(config.mockPath)
-    var setting = {}
-    if (fs.existsSync(config.userSettingPath)) {
-      setting = fs.readFileSync(config.userSettingPath, 'utf8')
-      setting = JSON.parse(setting)
-    }
-    allMocks.forEach(function (mock) {
-      var mockName = mock.name
-      mock.responseOptionsList = []
-      for (var key in mock.responseOptions) {
-        var option = mock.responseOptions[key]
-        option.key = key
-        option.template = fs.readFileSync(path.join(config.mockPath, option.path), 'utf8')
-        mock.responseOptionsList.push(option)
-      }
-      if (setting[mockName]) {
-        mock.responseKey = setting[mockName]
-      }
-    })
-    var data = {
-      code: 1,
-      data: allMocks
-    }
-    res.send(data)
-  })
   app.post('/ejs-mock/admin/update_mock', function (req, res, next) {
     var key = req.body.name
     var mockPath = path.join(config.mockPath, key + '.json')
@@ -171,10 +177,11 @@ function initAdmin (app, config) {
       }
     })
   })
+
   app.post('/ejs-mock/admin/update_option', function (req, res, next) {
     var key = req.body.mockName
     var optionsPath = path.join(config.mockPath, key)
-    var mockPath = path.join(config.mockPath, key + '.json')
+    var mockFile = path.join(config.mockPath, key + '.json')
     if (!req.body.name) {
       res.end('{"code": "30001", "errInfo": "params no exist"}')
       return
@@ -183,20 +190,54 @@ function initAdmin (app, config) {
       res.end('{"code": "30001", "errInfo": "params no exist"}')
       return
     }
-    var templatePath = path.join(optionsPath, req.body.name + '.json')
-    fs.mkdir(optionsPath, function(err, fd) {
-      fs.writeFileSync(templatePath, req.body.template)
-      var mock = JSON.parse(fs.readFileSync(mockPath))
-      console.log(mock)
+    var templateFile = path.join(optionsPath, req.body.name + '.json')
+    function handleTemplate (callback) {
+      fs.mkdir(optionsPath, function(err, fd) {
+        fs.writeFileSync(templateFile, req.body.template)
+        callback(null, 'template')
+      })
+    }
+    function handleMock (callback) {
+      var mock = JSON.parse(fs.readFileSync(mockFile))
       !mock.responseOptions && (mock.responseOptions = {})
       var option = mock.responseOptions
       !option[req.body.name] && (option[req.body.name] = {})
       option[req.body.name].desc = req.body.desc
-      option[req.body.name].path = path.relative(config.mockPath, templatePath)
+      option[req.body.name].path = path.relative(config.mockPath, templateFile)
       !mock.responseKey && (mock.responseKey = [req.body.name])
-      fs.writeFileSync(mockPath, JSON.stringify(mock))
+      fs.writeFileSync(mockFile, JSON.stringify(mock))
+      callback(null, 'mock')
+    }
+    async.parallel([handleTemplate, handleMock], function (err, results) {
+      console.log(JSON.stringify(results).blue)
+      var test = new Error('my error')
+      test.statusCode = 404
+      next(test)
+      return
+      if (err) {
+        console.log(err.red)
+      }
       res.send('{"code": "200"}')
     })
+    // fs.mkdir(optionsPath, function(err, fd) {
+    //   fs.writeFileSync(templateFile, req.body.template)
+    //   var mock = JSON.parse(fs.readFileSync(mockFile))
+    //   console.log(mock)
+    //   !mock.responseOptions && (mock.responseOptions = {})
+    //   var option = mock.responseOptions
+    //   !option[req.body.name] && (option[req.body.name] = {})
+    //   option[req.body.name].desc = req.body.desc
+    //   option[req.body.name].path = path.relative(config.mockFile, templateFile)
+    //   !mock.responseKey && (mock.responseKey = [req.body.name])
+    //   fs.writeFileSync(mockFile, JSON.stringify(mock))
+    //   res.send('{"code": "200"}')
+    // })
+  })
+}
+
+function errHandler (app) {
+  app.use(function (err, req, res) {
+    res.statusCode(err.statusCode || 500).json('err')
   })
 }
 
@@ -239,6 +280,8 @@ function main (config) {
   app.use(bodyParser())
   initStaticServer(app, config)
   initAdmin(app, config)
+  initAdminAPI(app, config)
+  errHandler(app)
   initAPI(app, config)
   app.listen(config.port || 3000, '127.0.0.1')
 }

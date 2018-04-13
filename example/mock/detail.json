@@ -1,1 +1,1 @@
-{"name":"detail","describe":"detial data1","url":"/detail","method":"GET","dataType":"JSON","responseKey":"success","responseOptions":{"success":{"desc":"success response","path":"./detail/success.json"},"fail":{"desc":"fail response","path":"./detail/fail.json"}}}
+{"name":"detail","describe":"detial data1","url":"/detail","method":"GET","dataType":"JSON","responseKey":"success","responseOptions":{"success":{"desc":"success response","path":"detail/success.json"},"fail":{"desc":"fail response","path":"./detail/fail.json"}}}

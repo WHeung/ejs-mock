@@ -29,8 +29,10 @@
     "ejs-mock": "./bin/ejs-mock.js"
   },
   "dependencies": {
+    "async": "^2.6.0",
     "body-parser": "^1.17.2",
     "chalk": "^1.0.0",
+    "colors": "^1.2.1",
     "commander": "^2.11.0",
     "ejs": "^2.5.6",
     "express": "^4.13.0",

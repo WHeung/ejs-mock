@@ -1,1 +1,1 @@
-{"name":"test","describe":"test","url":"/test","method":"POST","dataType":"json","responseOptions":{"test1":{"desc":"test1","path":"test/test1.json"}},"responseKey":["test1"]}
+{"name":"test","describe":"test","url":"/test","method":"POST","dataType":"json","responseOptions":{"test1":{"desc":"test1","path":"test/test1.json"},"test2":{"desc":"test2","path":"test/test2.json"}},"responseKey":["test1"]}
